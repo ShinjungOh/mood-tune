@@ -5,17 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Music, Heart, TrendingUp, Settings, BookOpen, Bookmark } from "lucide-react";
+import { Calendar, Music, Heart, TrendingUp, Settings, BookOpen, Bookmark, Edit2 } from "lucide-react";
+import GenreEditModal from "@/components/GenreEditModal";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("entries");
+  const [isGenreModalOpen, setIsGenreModalOpen] = useState(false);
+  const [favoriteGenres, setFavoriteGenres] = useState(["K-Pop", "인디", "Jazz", "Classical"]);
   const navigate = useNavigate();
 
   const mockStats = {
     totalEntries: 24,
     totalPlaylists: 18,
     totalLikes: 156,
-    favoriteGenres: ["K-Pop", "Indie", "Jazz", "Classical"]
   };
 
   const mockEntries = [
@@ -101,14 +103,23 @@ const Profile = () => {
         {/* Favorite Genres */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <TrendingUp className="h-5 w-5" />
-              선호 장르
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <TrendingUp className="h-5 w-5" />
+                선호 장르
+              </CardTitle>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setIsGenreModalOpen(true)}
+              >
+                <Edit2 className="h-4 w-4" />
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {mockStats.favoriteGenres.map((genre) => (
+              {favoriteGenres.map((genre) => (
                 <span
                   key={genre}
                   className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium"
@@ -116,6 +127,9 @@ const Profile = () => {
                   {genre}
                 </span>
               ))}
+              {favoriteGenres.length === 0 && (
+                <p className="text-sm text-muted-foreground">아직 선호 장르를 설정하지 않으셨네요. 편집 버튼을 눌러 추가해보세요!</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -211,6 +225,18 @@ const Profile = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Genre Edit Modal */}
+        <GenreEditModal
+          isOpen={isGenreModalOpen}
+          onClose={() => setIsGenreModalOpen(false)}
+          currentGenres={favoriteGenres}
+          onSave={(newGenres) => {
+            setFavoriteGenres(newGenres);
+            // 여기서 실제로는 API를 호출하여 서버에 저장
+            console.log("Updated genres:", newGenres);
+          }}
+        />
       </div>
     </div>
   );
