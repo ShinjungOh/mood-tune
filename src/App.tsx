@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import Timeline from "./pages/Timeline";
 import WriteEntry from "./pages/WriteEntry";
 import Profile from "./pages/Profile";
+import EntryDetail from "./pages/EntryDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
               <Route index element={<Timeline />} />
               <Route path="/write" element={<WriteEntry />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/entry/:id" element={<EntryDetail />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
