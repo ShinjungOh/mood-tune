@@ -1,5 +1,9 @@
 # MoodTune 
 
+![CleanShot 2025-07-02 at 17 54 00@2x](https://github.com/user-attachments/assets/86a9bfa9-3d51-4b35-8fbe-c40a038942b1)
+
+
+
 ## 🔗 프로젝트 링크
 
 [MoodTune 🎵](https://mood-tune.lovable.app/)
