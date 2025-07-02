@@ -1,12 +1,15 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Music, Heart, TrendingUp, Settings } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, Music, Heart, TrendingUp, Settings, BookOpen, Bookmark } from "lucide-react";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("entries");
+  const navigate = useNavigate();
 
   const mockStats = {
     totalEntries: 24,
@@ -19,6 +22,43 @@ const Profile = () => {
     { id: 1, date: "2024-01-15", summary: "새로운 시작에 대한 설렘", mood: "hopeful", likes: 12 },
     { id: 2, date: "2024-01-14", summary: "친구들과의 즐거운 시간", mood: "happy", likes: 8 },
     { id: 3, date: "2024-01-13", summary: "조용한 휴식이 필요한 하루", mood: "calm", likes: 15 },
+  ];
+
+  const mockPlaylists = [
+    { 
+      id: 1, 
+      title: "희망찬 시작의 플레이리스트", 
+      songCount: 3, 
+      date: "2024.01.15", 
+      likes: 12,
+      type: "diary", // 일기 기반
+      entryId: 1
+    },
+    { 
+      id: 2, 
+      title: "평온한 휴식의 플레이리스트", 
+      songCount: 3, 
+      date: "2024.01.13", 
+      likes: 15,
+      type: "diary", // 일기 기반
+      entryId: 3
+    },
+    { 
+      id: 3, 
+      title: "K-Pop 신나는 플레이리스트", 
+      songCount: 10, 
+      date: "2024.01.10", 
+      likes: 25,
+      type: "saved" // 저장된 플레이리스트
+    },
+    { 
+      id: 4, 
+      title: "잔잔한 재즈 모음", 
+      songCount: 8, 
+      date: "2024.01.08", 
+      likes: 18,
+      type: "saved" // 저장된 플레이리스트
+    }
   ];
 
   return (
@@ -96,7 +136,11 @@ const Profile = () => {
           <TabsContent value="entries" className="mt-6">
             <div className="space-y-4">
               {mockEntries.map((entry) => (
-                <Card key={entry.id} className="hover-scale">
+                <Card 
+                  key={entry.id} 
+                  className="hover-scale cursor-pointer transition-all hover:shadow-md"
+                  onClick={() => navigate(`/entry/${entry.id}`)}
+                >
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <span className="text-sm text-muted-foreground">{entry.date}</span>
@@ -105,7 +149,7 @@ const Profile = () => {
                         {entry.likes}
                       </div>
                     </div>
-                    <p className="font-medium mb-2">{entry.summary}</p>
+                    <p className="font-medium mb-2 hover:text-primary transition-colors">{entry.summary}</p>
                     <span className="inline-flex items-center px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
                       #{entry.mood}
                     </span>
@@ -117,41 +161,53 @@ const Profile = () => {
 
           <TabsContent value="playlists" className="mt-6">
             <div className="space-y-4">
-              <Card className="hover-scale">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-mood-gradient flex items-center justify-center">
-                      <Music className="h-5 w-5 text-white" />
+              {mockPlaylists.map((playlist) => (
+                <Card 
+                  key={playlist.id} 
+                  className="hover-scale cursor-pointer transition-all hover:shadow-md"
+                  onClick={() => {
+                    if (playlist.type === "diary" && playlist.entryId) {
+                      navigate(`/entry/${playlist.entryId}`);
+                    }
+                  }}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                        playlist.type === "diary" ? "bg-mood-gradient" : "bg-gradient-to-r from-blue-500 to-purple-600"
+                      }`}>
+                        <Music className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-medium">{playlist.title}</p>
+                          <Badge 
+                            variant={playlist.type === "diary" ? "default" : "secondary"}
+                            className="text-xs"
+                          >
+                            {playlist.type === "diary" ? (
+                              <>
+                                <BookOpen className="h-3 w-3 mr-1" />
+                                내 일기
+                              </>
+                            ) : (
+                              <>
+                                <Bookmark className="h-3 w-3 mr-1" />
+                                저장됨
+                              </>
+                            )}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{playlist.songCount}곡 • {playlist.date}</p>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Heart className="h-3 w-3" />
+                        {playlist.likes}
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="font-medium">희망찬 시작의 플레이리스트</p>
-                      <p className="text-sm text-muted-foreground">3곡 • 2024.01.15</p>
-                    </div>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Heart className="h-3 w-3" />
-                      12
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="hover-scale">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                      <Music className="h-5 w-5 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">평온한 휴식의 플레이리스트</p>
-                      <p className="text-sm text-muted-foreground">3곡 • 2024.01.13</p>
-                    </div>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Heart className="h-3 w-3" />
-                      15
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </TabsContent>
         </Tabs>
