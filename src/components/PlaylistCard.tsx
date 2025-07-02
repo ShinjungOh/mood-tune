@@ -1,5 +1,5 @@
 
-import { Heart, Play, Bookmark } from "lucide-react";
+import { Heart, Play, Bookmark, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
@@ -37,6 +37,21 @@ const getMoodColor = (mood: string) => {
 const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+
+  const handleShare = () => {
+    // 실제로는 Web Share API를 사용하거나 클립보드에 복사
+    if (navigator.share) {
+      navigator.share({
+        title: `${playlist.author}님의 플레이리스트`,
+        text: playlist.summary,
+        url: window.location.href
+      });
+    } else {
+      // 클립보드에 복사하는 대체 방법
+      navigator.clipboard.writeText(window.location.href);
+      alert('링크가 복사되었습니다!');
+    }
+  };
 
   return (
     <Card className="overflow-hidden hover-scale animate-fade-in">
@@ -88,12 +103,12 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
         {/* Actions */}
         <div className="px-4 py-3 border-t border-border/50 bg-muted/20">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsLiked(!isLiked)}
-                className={`flex items-center gap-2 ${isLiked ? 'text-red-500' : ''}`}
+                className={`flex items-center gap-1.5 ${isLiked ? 'text-red-500' : ''}`}
               >
                 <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
                 <span className="text-sm">{playlist.likes + (isLiked ? 1 : 0)}</span>
@@ -103,10 +118,20 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsSaved(!isSaved)}
-                className={`flex items-center gap-2 ${isSaved ? 'text-primary' : ''}`}
+                className={`flex items-center gap-1.5 ${isSaved ? 'text-primary' : ''}`}
               >
                 <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} />
                 <span className="text-sm">저장</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShare}
+                className="flex items-center gap-1.5"
+              >
+                <Share2 className="h-4 w-4" />
+                <span className="text-sm">공유</span>
               </Button>
             </div>
 
