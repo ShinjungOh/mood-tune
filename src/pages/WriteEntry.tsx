@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Music, Sparkles, ArrowRight, RefreshCw } from "lucide-react";
+import { Music, Sparkles, ArrowRight, RefreshCw, ThumbsDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const WriteEntry = () => {
   const [entry, setEntry] = useState("");
@@ -15,9 +15,11 @@ const WriteEntry = () => {
     songs: Array<{ title: string; artist: string; reason: string }>;
   } | null>(null);
   const [rerollCount, setRerollCount] = useState(0);
+  const [songFeedback, setSongFeedback] = useState<Record<number, boolean>>({});
   const maxRerolls = 2;
 
   const navigate = useNavigate();
+  const { toast } = useToast();
   const charCount = entry.length;
   const minChars = 50;
   const maxChars = 1000;
@@ -225,6 +227,7 @@ const WriteEntry = () => {
       const mockResult = mockPlaylistSets[rerollCount % mockPlaylistSets.length];
 
       setAnalysisResult(mockResult);
+      setSongFeedback({});
       setIsAnalyzing(false);
     }, 2000);
   };
@@ -234,6 +237,19 @@ const WriteEntry = () => {
 
     setRerollCount(prev => prev + 1);
     handleAnalyze(true);
+  };
+
+  const handleSongFeedback = (songIndex: number) => {
+    setSongFeedback(prev => ({
+      ...prev,
+      [songIndex]: true
+    }));
+
+    toast({
+      title: "피드백 감사합니다!",
+      description: "앞으로 더 나은 추천을 위해 활용하겠습니다.",
+      duration: 2000,
+    });
   };
 
   const handleShare = () => {
@@ -295,6 +311,18 @@ const WriteEntry = () => {
                       <p className="text-sm text-muted-foreground">{song.artist}</p>
                       <p className="text-xs text-muted-foreground mt-1">{song.reason}</p>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleSongFeedback(index)}
+                      disabled={songFeedback[index]}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <ThumbsDown className="h-4 w-4" />
+                      <span className="text-xs ml-1">
+                        {songFeedback[index] ? "피드백 완료" : "별로예요"}
+                      </span>
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -317,6 +345,7 @@ const WriteEntry = () => {
               onClick={() => {
                 setAnalysisResult(null);
                 setRerollCount(0);
+                setSongFeedback({});
               }}
               className="w-full"
             >
