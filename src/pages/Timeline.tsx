@@ -11,6 +11,7 @@ const mockPlaylists = [
     summary: "오늘은 비가 와서 마음이 차분해졌어요",
     mood: "melancholy",
     author: "음악러버",
+    authorId: "user1", // 사용자 ID 추가
     createdAt: "2시간 전",
     likes: 24,
     isFriend: true,
@@ -22,9 +23,10 @@ const mockPlaylists = [
   },
   {
     id: 2,
-    summary: "친구들과 즐거운 시간을 보냈던 하루",
+    summary: "친구들과 즐거운 시간을 보냔던 하루",
     mood: "happy",
     author: "데일리뮤직",
+    authorId: "user2", // 사용자 ID 추가
     createdAt: "5시간 전",
     likes: 43,
     isFriend: false,
@@ -39,6 +41,7 @@ const mockPlaylists = [
     summary: "새로운 도전을 앞두고 설레는 마음",
     mood: "excited",
     author: "감성플레이어",
+    authorId: "user3", // 사용자 ID 추가
     createdAt: "1일 전",
     likes: 18,
     isFriend: true,
