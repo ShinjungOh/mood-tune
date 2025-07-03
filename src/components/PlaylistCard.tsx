@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface Song {
   title: string;
@@ -16,6 +17,7 @@ interface Playlist {
   summary: string;
   mood: string;
   author: string;
+  authorId: string;
   createdAt: string;
   likes: number;
   isFriend?: boolean;
@@ -42,6 +44,7 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
   const [isFriend, setIsFriend] = useState(playlist.isFriend || false);
   const [songFeedbacks, setSongFeedbacks] = useState<{[key: number]: boolean}>({});
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleShare = () => {
     // 실제로는 Web Share API를 사용하거나 클립보드에 복사
@@ -52,7 +55,6 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
         url: window.location.href
       });
     } else {
-      // 클립보드에 복사하는 대체 방법
       navigator.clipboard.writeText(window.location.href);
       toast({
         title: "링크가 복사되었습니다!",
@@ -84,6 +86,14 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
     });
   };
 
+  const handleProfileClick = () => {
+    navigate(`/user/${playlist.authorId}`);
+  };
+
+  const handleAuthorNameClick = () => {
+    navigate(`/user/${playlist.authorId}`);
+  };
+
   return (
     <Card className="overflow-hidden hover-scale animate-fade-in">
       <CardContent className="p-0">
@@ -91,13 +101,21 @@ const PlaylistCard = ({ playlist }: PlaylistCardProps) => {
         <div className="p-4 pb-3">
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full ${getMoodColor(playlist.mood)} flex items-center justify-center`}>
+              <div 
+                className={`w-10 h-10 rounded-full ${getMoodColor(playlist.mood)} flex items-center justify-center cursor-pointer hover:scale-105 transition-transform`}
+                onClick={handleProfileClick}
+              >
                 <span className="text-white text-sm font-medium">
                   {playlist.author[0]}
                 </span>
               </div>
               <div>
-                <p className="font-medium text-sm">{playlist.author}</p>
+                <p 
+                  className="font-medium text-sm cursor-pointer hover:text-primary transition-colors"
+                  onClick={handleAuthorNameClick}
+                >
+                  {playlist.author}
+                </p>
                 <p className="text-xs text-muted-foreground">{playlist.createdAt}</p>
               </div>
             </div>
