@@ -4,14 +4,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Music, Heart, TrendingUp, ArrowLeft, UserPlus, UserCheck } from "lucide-react";
+import { Calendar, Music, Heart, TrendingUp, ArrowLeft, UserPlus, UserCheck, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const UserProfile = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("entries");
+  const [activeTab, setActiveTab] = useState("playlists");
   const [isFriend, setIsFriend] = useState(false);
 
   // Mock user data - 실제 앱에서는 userId로 API 호출
@@ -25,10 +25,40 @@ const UserProfile = () => {
     joinDate: "2024.01.01"
   };
 
-  const mockEntries = [
-    { id: 1, date: "2024-01-15", summary: "따뜻한 햇살 속에서 느낀 평온함", mood: "peaceful", likes: 18 },
-    { id: 2, date: "2024-01-14", summary: "새로운 카페에서 마신 커피의 여운", mood: "contemplative", likes: 12 },
-    { id: 3, date: "2024-01-13", summary: "친구와의 깊은 대화가 남긴 감동", mood: "grateful", likes: 25 },
+  const mockPlaylists = [
+    { 
+      id: 1, 
+      date: "2024-01-15", 
+      mood: "peaceful", 
+      likes: 18,
+      songs: [
+        { title: "봄날", artist: "BTS" },
+        { title: "Through the Night", artist: "아이유" },
+        { title: "너의 의미", artist: "아이유, 김창완" }
+      ]
+    },
+    { 
+      id: 2, 
+      date: "2024-01-14", 
+      mood: "contemplative", 
+      likes: 12,
+      songs: [
+        { title: "밤편지", artist: "아이유" },
+        { title: "오래된 노래", artist: "스탠딩 에그" },
+        { title: "잊어야 한다는 마음으로", artist: "아이유" }
+      ]
+    },
+    { 
+      id: 3, 
+      date: "2024-01-13", 
+      mood: "grateful", 
+      likes: 25,
+      songs: [
+        { title: "고마워", artist: "김동률" },
+        { title: "너에게", artist: "김광석" },
+        { title: "사랑하기 때문에", artist: "유재하" }
+      ]
+    },
   ];
 
   const handleAddFriend = () => {
@@ -134,35 +164,57 @@ const UserProfile = () => {
           </CardContent>
         </Card>
 
-        {/* User's Entries */}
+        {/* User's Playlists */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-1">
-            <TabsTrigger value="entries" className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              {mockUser.nickname}님의 일기
+            <TabsTrigger value="playlists" className="flex items-center gap-2">
+              <Music className="h-4 w-4" />
+              {mockUser.nickname}님의 플레이리스트
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="entries" className="mt-6">
+          <TabsContent value="playlists" className="mt-6">
+            {/* Privacy Notice */}
+            <Card className="mb-4 bg-muted/50">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Lock className="h-4 w-4" />
+                  <p>다른 사용자의 일기 내용은 비공개입니다. 플레이리스트만 조회할 수 있습니다.</p>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="space-y-4">
-              {mockEntries.map((entry) => (
+              {mockPlaylists.map((playlist) => (
                 <Card 
-                  key={entry.id} 
-                  className="hover-scale cursor-pointer transition-all hover:shadow-md"
-                  onClick={() => navigate(`/entry/${entry.id}`)}
+                  key={playlist.id} 
+                  className="hover-scale transition-all hover:shadow-md"
                 >
                   <CardContent className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-sm text-muted-foreground">{entry.date}</span>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">{playlist.date}</span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                          #{playlist.mood}
+                        </span>
+                      </div>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Heart className="h-3 w-3" />
-                        {entry.likes}
+                        {playlist.likes}
                       </div>
                     </div>
-                    <p className="font-medium mb-2 hover:text-primary transition-colors">{entry.summary}</p>
-                    <span className="inline-flex items-center px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
-                      #{entry.mood}
-                    </span>
+                    
+                    <div className="space-y-2">
+                      <h4 className="font-medium text-sm mb-2">{mockUser.nickname}님의 {playlist.mood} 플레이리스트</h4>
+                      {playlist.songs.map((song, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-sm">
+                          <Music className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-muted-foreground">{song.title}</span>
+                          <span className="text-muted-foreground">-</span>
+                          <span className="text-muted-foreground">{song.artist}</span>
+                        </div>
+                      ))}
+                    </div>
                   </CardContent>
                 </Card>
               ))}

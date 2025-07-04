@@ -4,24 +4,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Music, Users, UserPlus, UserCheck, UserX, Check, X } from "lucide-react";
+import { Settings, Music, Users, UserPlus, UserCheck, UserX, Check, X, Edit2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import GenreEditModal from "@/components/GenreEditModal";
 
 const Profile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
+  const [isGenreModalOpen, setIsGenreModalOpen] = useState(false);
 
   // Mock data
-  const mockProfile = {
+  const [mockProfile, setMockProfile] = useState({
     nickname: "나의뮤직",
     bio: "감정을 음악으로 표현하는 것을 좋아합니다",
     favoriteGenres: ["인디", "재즈", "로파이", "발라드", "R&B"],
     totalLikes: 128,
     totalEntries: 15,
     joinDate: "2024.01.01"
-  };
+  });
+  
+  const [favoriteGenres, setFavoriteGenres] = useState(mockProfile.favoriteGenres);
 
   const mockFriends = [
     { id: 1, nickname: "음악러버", profileImageUrl: "", isOnline: true },
@@ -52,6 +56,18 @@ const Profile = () => {
     toast({
       title: "친구 삭제",
       description: `${nickname}님과의 친구 관계가 해제되었습니다.`,
+    });
+  };
+
+  const handleSaveGenres = (newGenres: string[]) => {
+    setFavoriteGenres(newGenres);
+    setMockProfile(prev => ({
+      ...prev,
+      favoriteGenres: newGenres
+    }));
+    toast({
+      title: "음악 취향 업데이트",
+      description: "선호 장르가 업데이트되었습니다.",
     });
   };
 
@@ -104,18 +120,35 @@ const Profile = () => {
           <TabsContent value="profile" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Music className="h-5 w-5" />
-                  음악 취향
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Music className="h-5 w-5" />
+                    음악 취향
+                  </CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsGenreModalOpen(true)}
+                    className="flex items-center gap-2"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                    편집
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {mockProfile.favoriteGenres.map((genre) => (
-                    <Badge key={genre} variant="secondary">
-                      {genre}
-                    </Badge>
-                  ))}
+                  {favoriteGenres.length > 0 ? (
+                    favoriteGenres.map((genre) => (
+                      <Badge key={genre} variant="secondary">
+                        {genre}
+                      </Badge>
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground text-sm">
+                      음악 취향을 설정하면 더 정확한 추천을 받을 수 있습니다.
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -231,6 +264,14 @@ const Profile = () => {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Genre Edit Modal */}
+      <GenreEditModal
+        isOpen={isGenreModalOpen}
+        onClose={() => setIsGenreModalOpen(false)}
+        currentGenres={favoriteGenres}
+        onSave={handleSaveGenres}
+      />
     </div>
   );
 };
