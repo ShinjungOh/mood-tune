@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Music, Users, UserPlus, UserCheck, UserX, Check, X, Edit2 } from "lucide-react";
+import { Settings, Music, Users, UserPlus, UserCheck, UserX, Check, X, Edit2, Calendar, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import GenreEditModal from "@/components/GenreEditModal";
@@ -26,6 +26,37 @@ const Profile = () => {
   });
   
   const [favoriteGenres, setFavoriteGenres] = useState(mockProfile.favoriteGenres);
+
+  // Mock entries data
+  const mockEntries = [
+    { 
+      id: 1, 
+      date: "2024-01-15", 
+      title: "새로운 시작에 대한 설렘", 
+      summary: "따뜻한 햇살 속에서 느낀 평온함", 
+      mood: "peaceful", 
+      likes: 18,
+      playlistId: 1
+    },
+    { 
+      id: 2, 
+      date: "2024-01-14", 
+      title: "카페에서의 여유",
+      summary: "새로운 카페에서 마신 커피의 여운", 
+      mood: "contemplative", 
+      likes: 12,
+      playlistId: 2
+    },
+    { 
+      id: 3, 
+      date: "2024-01-13", 
+      title: "친구와의 소중한 시간",
+      summary: "친구와의 깊은 대화가 남긴 감동", 
+      mood: "grateful", 
+      likes: 25,
+      playlistId: 3
+    },
+  ];
 
   const mockFriends = [
     { id: 1, nickname: "음악러버", profileImageUrl: "", isOnline: true },
@@ -148,6 +179,59 @@ const Profile = () => {
                     <p className="text-muted-foreground text-sm">
                       음악 취향을 설정하면 더 정확한 추천을 받을 수 있습니다.
                     </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* My Entries */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  나의 일기
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockEntries.map((entry) => (
+                    <div 
+                      key={entry.id} 
+                      className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer hover:border-primary/50"
+                      onClick={() => navigate(`/entry/${entry.id}`)}
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-sm text-muted-foreground">{entry.date}</span>
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          <Heart className="h-3 w-3" />
+                          {entry.likes}
+                        </div>
+                      </div>
+                      <h3 className="font-semibold mb-1">{entry.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-2">{entry.summary}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                          #{entry.mood}
+                        </span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium">
+                          <Music className="h-3 w-3 mr-1" />
+                          플레이리스트
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {mockEntries.length === 0 && (
+                    <div className="text-center py-8">
+                      <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground">아직 작성한 일기가 없습니다.</p>
+                      <Button 
+                        className="mt-4"
+                        onClick={() => navigate('/write')}
+                      >
+                        첫 일기 작성하기
+                      </Button>
+                    </div>
                   )}
                 </div>
               </CardContent>
