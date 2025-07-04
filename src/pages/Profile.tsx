@@ -24,35 +24,35 @@ const Profile = () => {
     totalEntries: 15,
     joinDate: "2024.01.01"
   });
-  
+
   const [favoriteGenres, setFavoriteGenres] = useState(mockProfile.favoriteGenres);
 
   // Mock entries data
   const mockEntries = [
-    { 
-      id: 1, 
-      date: "2024-01-15", 
-      title: "새로운 시작에 대한 설렘", 
-      summary: "따뜻한 햇살 속에서 느낀 평온함", 
-      mood: "peaceful", 
+    {
+      id: 1,
+      date: "2024-01-15",
+      title: "새로운 시작에 대한 설렘",
+      summary: "따뜻한 햇살 속에서 느낀 평온함",
+      mood: "peaceful",
       likes: 18,
       playlistId: 1
     },
-    { 
-      id: 2, 
-      date: "2024-01-14", 
+    {
+      id: 2,
+      date: "2024-01-14",
       title: "카페에서의 여유",
-      summary: "새로운 카페에서 마신 커피의 여운", 
-      mood: "contemplative", 
+      summary: "새로운 카페에서 마신 커피의 여운",
+      mood: "contemplative",
       likes: 12,
       playlistId: 2
     },
-    { 
-      id: 3, 
-      date: "2024-01-13", 
+    {
+      id: 3,
+      date: "2024-01-13",
       title: "친구와의 소중한 시간",
-      summary: "친구와의 깊은 대화가 남긴 감동", 
-      mood: "grateful", 
+      summary: "친구와의 깊은 대화가 남긴 감동",
+      mood: "grateful",
       likes: 25,
       playlistId: 3
     },
@@ -157,13 +157,12 @@ const Profile = () => {
                     음악 취향
                   </CardTitle>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
                     onClick={() => setIsGenreModalOpen(true)}
                     className="flex items-center gap-2"
                   >
                     <Edit2 className="h-4 w-4" />
-                    편집
                   </Button>
                 </div>
               </CardHeader>
@@ -171,9 +170,12 @@ const Profile = () => {
                 <div className="flex flex-wrap gap-2">
                   {favoriteGenres.length > 0 ? (
                     favoriteGenres.map((genre) => (
-                      <Badge key={genre} variant="secondary">
+                      <span
+                        key={genre}
+                        className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium"
+                      >
                         {genre}
-                      </Badge>
+                      </span>
                     ))
                   ) : (
                     <p className="text-muted-foreground text-sm">
@@ -195,8 +197,8 @@ const Profile = () => {
               <CardContent>
                 <div className="space-y-4">
                   {mockEntries.map((entry) => (
-                    <div 
-                      key={entry.id} 
+                    <div
+                      key={entry.id}
                       className="p-4 border rounded-lg hover:shadow-md transition-all cursor-pointer hover:border-primary/50"
                       onClick={() => navigate(`/entry/${entry.id}`)}
                     >
@@ -220,12 +222,12 @@ const Profile = () => {
                       </div>
                     </div>
                   ))}
-                  
+
                   {mockEntries.length === 0 && (
                     <div className="text-center py-8">
                       <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground">아직 작성한 일기가 없습니다.</p>
-                      <Button 
+                      <Button
                         className="mt-4"
                         onClick={() => navigate('/write')}
                       >
@@ -348,7 +350,7 @@ const Profile = () => {
           </TabsContent>
         </Tabs>
       </div>
-      
+
       {/* Genre Edit Modal */}
       <GenreEditModal
         isOpen={isGenreModalOpen}

@@ -84,19 +84,18 @@ const GenreEditModal = ({ isOpen, onClose, currentGenres, onSave }: GenreEditMod
                 {genres.map((genre) => {
                   const isSelected = selectedGenres.includes(genre.name);
                   return (
-                    <Badge
+                    <span
                       key={genre.id}
-                      variant={isSelected ? "default" : "outline"}
-                      className={`cursor-pointer transition-all ${
+                      className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer transition-all inline-flex items-center ${
                         isSelected 
                           ? "bg-primary text-primary-foreground" 
-                          : "hover:bg-primary/10"
+                          : "bg-primary/10 text-primary hover:bg-primary/20"
                       }`}
                       onClick={() => toggleGenre(genre.name)}
                     >
                       {isSelected && <Check className="h-3 w-3 mr-1" />}
                       {genre.name}
-                    </Badge>
+                    </span>
                   );
                 })}
               </div>
